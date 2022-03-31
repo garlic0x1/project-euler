@@ -19,6 +19,7 @@ func main() {
 	fmt.Println(permutation(1000000, buildArr(10)))
 }
 
+// recursively calculates the largest digit of the permutation
 func permutation(n int, arr []int) []int {
 	if len(arr) > 1 {
 		add := place(n, arr)
@@ -28,9 +29,6 @@ func permutation(n int, arr []int) []int {
 }
 
 func place(n int, arr []int) int {
-	if len(arr) == 0 {
-		return 0
-	}
 	return (n - 1) / factorial(len(arr)-1) % len(arr)
 }
 
