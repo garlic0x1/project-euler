@@ -22,14 +22,14 @@ func main() {
 // recursively calculates the largest digit of the permutation
 func permutation(n int, arr []int) []int {
 	if len(arr) > 1 {
-		add := place(n, arr)
+		add := place(n, len(arr))
 		return append([]int{arr[add]}, permutation(n, removeFrom(arr, arr[add]))...)
 	}
 	return []int{arr[0]}
 }
 
-func place(n int, arr []int) int {
-	return (n - 1) / factorial(len(arr)-1) % len(arr)
+func place(n int, length int) int {
+	return (n - 1) / factorial(length-1) % length
 }
 
 func factorial(n int) int {
