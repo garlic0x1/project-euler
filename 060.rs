@@ -9,9 +9,21 @@ Find the lowest sum for a set of five primes for which any two primes concatenat
 
 */
 
-use math::{factor::is_prime, sieve::primes};
+use math::{factor::is_prime, functions::numcat, sieve::primes};
 
-fn rec(stack: &mut Vec<u64>, limit: usize, primes: &Vec<u64>) -> Option<Vec<u64>> {
+pub fn pe60() {
+    let primes = primes(1_000_000);
+
+    println!(
+        "{:?}",
+        rec(&mut Vec::new(), 5, &primes)
+            .unwrap()
+            .iter()
+            .sum::<u64>()
+    );
+}
+
+fn recurse(stack: &mut Vec<u64>, limit: usize, primes: &Vec<u64>) -> Option<Vec<u64>> {
     if stack.len() >= limit {
         return Some(stack.clone());
     }
@@ -23,7 +35,7 @@ fn rec(stack: &mut Vec<u64>, limit: usize, primes: &Vec<u64>) -> Option<Vec<u64>
 
     'out: for &p in primes.iter().take_while(|&x| *x < max) {
         for &n in stack.iter() {
-            if !(is_prime(fast_cat(p, n)) && is_prime(fast_cat(n, p))) {
+            if !(is_prime(numcat(p, n)) && is_prime(numcat(n, p))) {
                 continue 'out;
             }
         }
@@ -38,26 +50,4 @@ fn rec(stack: &mut Vec<u64>, limit: usize, primes: &Vec<u64>) -> Option<Vec<u64>
     }
 
     None
-}
-
-pub fn pe60() {
-    let primes = primes(1_000_000);
-
-    println!(
-        "{:?}",
-        rec(&mut Vec::new(), 5, &primes)
-            .unwrap()
-            .iter()
-            .sum::<u64>()
-    );
-}
-
-fn fast_cat(a: u64, b: u64) -> u64 {
-    let mut x = a;
-    let mut dec = b;
-    while dec > 0 {
-        dec /= 10;
-        x *= 10;
-    }
-    x + b
 }
