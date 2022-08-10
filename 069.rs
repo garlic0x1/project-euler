@@ -24,6 +24,41 @@ Find the value of n ≤ 1,000,000 for which n/φ(n) is a maximum.
 
 use std::cell::Cell;
 
+pub fn pe69() {
+    let sol = (0..1_000_000)
+        .map(|x| x as f32 / totient(x) as f32)
+        .enumerate()
+        .fold((0, 0.0), |max, it| if it.1 > max.1 { it } else { max });
+
+    println!("{:?}", sol);
+}
+
+fn totient(n: u32) -> u32 {
+    totient_recursive(n, 2, n)
+}
+
+fn totient_recursive(n: u32, i: u32, res: u32) -> u32 {
+    if n > i * i {
+        if n % i == 0 {
+            totient_recursive(pow_fac(n, i), i + 1, res - res / i)
+        } else {
+            totient_recursive(n, i + 1, res)
+        }
+    } else if n > 1 {
+        res - res / n
+    } else {
+        res
+    }
+}
+
+fn pow_fac(n: u32, i: u32) -> u32 {
+    if n % i == 0 {
+        pow_fac(n / i, i)
+    } else {
+        n
+    }
+}
+
 fn totient_traditional(n: u32) -> u32 {
     let mut n = n;
     let mut result = n;
@@ -63,36 +98,4 @@ fn totient_iterative(num: u32) -> u32 {
     }
 
     result
-}
-
-fn totient(n: u32) -> u32 {
-    totient_recursive(n, 2, n)
-}
-
-fn totient_recursive(n: u32, i: u32, res: u32) -> u32 {
-    let mut res = res;
-    if n > i * i {
-        let mut f = n;
-        if n % i == 0 {
-            while f % i == 0 {
-                f /= i;
-            }
-            res -= res / i;
-        }
-
-        totient_recursive(f, i + 1, res)
-    } else if n > 1 {
-        res - res / n
-    } else {
-        res
-    }
-}
-
-pub fn pe69() {
-    let sol = (0..1_000_000)
-        .enumerate()
-        .map(|x| (x.0, x.1 as f32 / totient(x.1) as f32))
-        .fold((0, 0.0), |max, (i, x)| if x > max.1 { (i, x) } else { max });
-
-    println!("{:?}", sol);
 }
