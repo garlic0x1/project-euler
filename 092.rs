@@ -19,32 +19,21 @@ use math::digits::LEndian;
 
 pub fn pe92() {
     let limit = 10_000_000;
-    let mut chains = vec![0usize; limit + 1];
-
-    chains
-        .iter_mut()
-        .enumerate()
-        .for_each(|(i, n)| *n = next(i));
+    let mut chains = (0..=limit).map(|i| next(i)).collect::<Vec<usize>>();
 
     untangle(&mut chains, limit);
 
-    let sol = &chains[1..limit].iter().filter(|&n| *n == 89).count();
+    let sol = chains.iter().filter(|&n| *n == 89).count();
     println!("{sol}");
 }
 
 fn untangle(chains: &mut Vec<usize>, limit: usize) {
-    if (1..=limit).fold(false, |tangled, i| {
-        let pointer = chains[i];
-        if pointer != 1 && pointer != 89 {
-            if let Some(&val) = chains.get(pointer) {
-                chains[i] = val;
-                return true;
-            }
+    (1..=limit).for_each(|i| loop {
+        match chains[i] {
+            1 | 89 => break,
+            pointer => chains[i] = chains[pointer],
         }
-        tangled
-    }) {
-        untangle(chains, limit);
-    }
+    });
 }
 
 fn next(n: usize) -> usize {
