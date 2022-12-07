@@ -33,17 +33,11 @@
     (loop do
       (let ((cell (or (safe-ref chains num) (square-sum num))))
         (push num visited)
-        (cond
-          ((and (/= cell 1) (/= cell 89))
-            (setq num cell))
-          ((= cell 1)
-           (progn
-             (switch-chain visited 1)
-             (setq done t)))
-          ((= cell 89)
-           (progn
-             (switch-chain visited 89)
-             (setq done t)))))
+        (if (and (/= cell 1) (/= cell 89))
+          (setq num cell)
+          (progn
+            (switch-chain visited cell)
+            (setq done t))))
       while (not done))))
 
 (defun untangle ()
@@ -52,5 +46,5 @@
   (let ((sum 0))
     (dotimes (ind (length chains))
       (if (equal 89 (aref chains ind))
-          (incf sum)))
-    (print sum)))
+        (incf sum)))
+    sum ))
